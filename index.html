@@ -1270,34 +1270,36 @@
         
         <div class="contact-form animate__animated animate__fadeInRight">
           <h3>Send Us a Message</h3>
-          <form action="https://formspree.io/f/xdkdpaav" method="POST">
-          <div class="form-group">
-            <label for="name" class="form-label">Your Name</label>
-            <input type="text" id="name" name="name" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" id="email" name="email" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="phone" class="form-label">Phone Number</label>
-            <input type="tel" id="phone" name="phone" class="form-control">
-          </div>
-          
-          <div class="form-group">
-            <label for="subject" class="form-label">Subject</label>
-            <input type="text" id="subject" name="subject" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="message" class="form-label">Message</label>
-            <textarea id="message" name="message" class="form-control" required></textarea>
-          </div>
-          
-          <button type="submit" class="btn btn-primary w-100">Send Message</button>
-        </form>
+          <form id="contactForm">
+  <div class="form-group">
+    <label for="name" class="form-label">Your Name</label>
+    <input type="text" id="name" name="name" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="email" class="form-label">Email Address</label>
+    <input type="email" id="email" name="email" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="phone" class="form-label">Phone Number</label>
+    <input type="tel" id="phone" name="phone" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="subject" class="form-label">Subject</label>
+    <input type="text" id="subject" name="subject" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="message" class="form-label">Message</label>
+    <textarea id="message" name="message" class="form-control" required></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100">Send Message</button>
+</form>
+
+<div id="formResponse" style="margin-top: 10px; display:none;"></div>
         </div>
       </div>
       
@@ -1455,8 +1457,33 @@
   setInterval(() => {
     current = (current + 1) % images.length;
     hero.style.backgroundImage = `url('${images[current]}')`;
-  }, 5000); // Change image every 5 seconds
+  }, 3000); // Change image every 3 seconds
+    ocument.getElementById("contactForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // stop page reload
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch("https://formspree.io/f/xyzpbbnb", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+    }).then(response => {
+        const msgBox = document.getElementById("formResponse");
+        msgBox.style.display = "block";
+
+        if (response.ok) {
+            msgBox.innerHTML = "<div class='alert alert-success'>✅ Message sent successfully!</div>";
+            form.reset();
+        } else {
+            msgBox.innerHTML = "<div class='alert alert-danger'>❌ Something went wrong. Please try again.</div>";
+        }
+    }).catch(error => {
+        document.getElementById("formResponse").innerHTML = "<div class='alert alert-danger'>⚠ Error: " + error.message + "</div>";
+    });
+});
   </script>
 </body>
 
 </html>
+
